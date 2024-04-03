@@ -32,7 +32,32 @@ def potential_field_control(lidar, current_pose, goal_pose):
     """
     # TODO for TP2
 
-    command = {"forward": 0,
-               "rotation": 0}
+    K_goal = 0.01
+    dist_goal = np.sqrt((current_pose[0]-goal_pose[0])**2 + (current_pose[1]-goal_pose[1])**2)
+
+    if(dist_goal != 0):
+
+        k_grad = K_goal/dist_goal
+
+        gradx = -k_grad*(current_pose[0]-goal_pose[0])
+        grady = k_grad*(current_pose[1]-goal_pose[1])
+
+        grad_theta = np.arctan(gradx/grady)
+
+        print("Antes ", grad_theta, gradx, grady,current_pose)
+
+        if(grad_theta > 0): 
+            if(gradx < 0): grad_theta -= np.pi
+        else:
+            if(grady > 0): grad_theta += np.pi
+
+
+        speed = np.sqrt(gradx**2 + grady**2)
+        print((grad_theta - current_pose[2]), grad_theta, current_pose[2])
+
+        command = {"forward": speed if speed < 1 else 1,
+            "rotation": (grad_theta - current_pose[2]) / (5*np.pi)}
+
+        
 
     return command
