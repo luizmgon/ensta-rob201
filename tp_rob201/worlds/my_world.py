@@ -11,14 +11,14 @@ from worlds import walls_my_world
 
 class MyWorld(WorldAbstract):
 
-    def __init__(self, robot: RobotAbstract):
+    def __init__(self, robot: RobotAbstract, use_shaders: bool = True):
         super().__init__(robot=robot)
 
         # PARAMETERS MAP
         self._size_area = (1113, 750)
 
         # PLAYGROUND
-        self._playground = ClosedPlayground(size=self._size_area)
+        self._playground = ClosedPlayground(size=self._size_area, use_shaders=use_shaders)
         walls_my_world.add_walls(self._playground)
         walls_my_world.add_boxes(self._playground)
 
@@ -26,4 +26,3 @@ class MyWorld(WorldAbstract):
         angle = random.uniform(-math.pi, math.pi) # math.pi/2.0
         self._robot_pos = ((439.0, 195), 0)
         self._playground.add(robot, self._robot_pos)
-
