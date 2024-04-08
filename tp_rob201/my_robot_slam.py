@@ -3,7 +3,8 @@ Robot controller definition
 Complete controller including SLAM, planning, path following
 """
 import numpy as np
-
+import win32api
+import win32con
 from place_bot.entities.robot_abstract import RobotAbstract
 from place_bot.entities.odometer import OdometerParams
 from place_bot.entities.lidar import LidarParams
@@ -51,7 +52,7 @@ class MyRobotSlam(RobotAbstract):
         """
         Main control function executed at each time step
         """
-        return self.control_tp2()
+        return self.control_tp3()
 
     def control_tp1(self):
         """
@@ -76,3 +77,30 @@ class MyRobotSlam(RobotAbstract):
         command = potential_field_control(self.lidar(), pose, goal)
 
         return command
+    
+    def control_tp3(self):
+
+        forw, turn = self.keyboard_control()
+
+        command = {"forward": 0.5*forw,
+                    "rotation": 0.5 * turn}
+        
+        self.tiny_slam.update_map(self.lidar(), self.odometer_values())
+
+        return command
+
+    def keyboard_control(self):
+
+        forward = 0
+        turn = 0
+
+        if win32api.GetAsyncKeyState(ord('A')) & (1 << 15) != 0:
+            turn = 1
+        elif win32api.GetAsyncKeyState(ord('D')) & (1 << 15) != 0:
+            turn = -1
+        elif win32api.GetAsyncKeyState(ord('W')) & (1 << 15) != 0:
+            forward = 1   
+        elif win32api.GetAsyncKeyState(ord('S')) & (1 << 15) != 0:
+            forward = -1
+
+        return forward, turn

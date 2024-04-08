@@ -18,7 +18,7 @@ class MyWorld(WorldAbstract):
         self._size_area = (1113, 750)
 
         # PLAYGROUND
-        self._playground = ClosedPlayground(size=self._size_area, use_shaders=use_shaders)
+        self._playground = ClosedPlayground(size=self._size_area)
         walls_my_world.add_walls(self._playground)
         walls_my_world.add_boxes(self._playground)
 
